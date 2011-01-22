@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-#include "INotify.hpp"
+
+#include "inotify/INotify.hpp"
 
 using std::cout;
 using std::endl;
