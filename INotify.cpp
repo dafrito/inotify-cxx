@@ -14,7 +14,11 @@ INotify::INotify() :
 
 void INotify::watch(const string& path, const int& bitmask)
 {
-	this->watch(path.c_str(), bitmask);
+	const int wd=inotify_add_watch(this->fd, path.c_str(), bitmask);
+	if(wd < 0)
+		throw runtime_error(string("Failed to add watch: ") + path.c_str());
+	if (!this->has_watch(path))
+		this->watches.insert(WatchMap::value_type(wd, path));
 }
 
 void INotify::remove_watch(const string& path)
