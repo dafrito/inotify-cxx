@@ -4,9 +4,9 @@
 
 using namespace std;
 
-void listdir (const char *path)
+void listdir (const string& path)
 {
-	DIR *pdir = opendir(path);
+	DIR *pdir = opendir(path.c_str());
 	if (pdir == 0) {
 		cerr << "Directory could not be opened: " << path << endl;
 		return;
