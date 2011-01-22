@@ -21,6 +21,11 @@ void INotify::watch(const string& path, const int& bitmask)
 		this->watches.insert(WatchMap::value_type(wd, path));
 }
 
+void INotify::watch(const string& path)
+{
+	this->watch(path, IN_ALL_EVENTS);
+}
+
 void INotify::remove_watch(const string& path)
 {
 	int wd=this->get_watch_fd(path);
