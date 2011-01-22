@@ -40,6 +40,17 @@ int INotify::get_watch_fd(const string& path)
 	return 0;
 }
 
+void INotify::add_listener(const INotifyListener* const listener)
+{
+	this->listeners.push_back(listener);
+}
+
+bool INotify::remove_listener(const INotifyListener* const listener)
+{
+	// XXX Stubbed
+	return false;
+}
+
 void INotify::read_events() {
 	int i=0;
 	int length=0;
@@ -48,7 +59,7 @@ void INotify::read_events() {
 		if (length < 0)
 			throw runtime_error("Failed to read next inotify event");
 		inotify_event *event = (inotify_event*) &buffer[i];
-		this->event_queue.push_back(*event);
+		this->dispatch_event(*event);
 		i += EVENT_SIZE + event->len;
 	} while (i < length);
 }
