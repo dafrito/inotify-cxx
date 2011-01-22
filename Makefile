@@ -1,6 +1,6 @@
-CCFLAGS=-Wall
+CCFLAGS=-Wall -Werror
 
-watcher: watcher.cpp
+watcher: *.cpp *.hpp
 	g++ `pkg-config --libs lua` $(CCFLAGS) -o watcher *.cpp
 
 clean:
