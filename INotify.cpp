@@ -1,7 +1,7 @@
 #include <map>
+#include <iostream>
 #include <stdexcept>
 #include "INotify.hpp"
-#include <cstdio>
 
 using namespace std;
 
@@ -49,12 +49,12 @@ int INotify::get_watch_fd(const string& path)
 	return 0;
 }
 
-void INotify::add_listener(const INotifyListener* const listener)
+void INotify::add_listener(INotifyListener* const listener)
 {
 	this->listeners.push_back(listener);
 }
 
-bool INotify::remove_listener(const INotifyListener* const listener)
+bool INotify::remove_listener(INotifyListener* const listener)
 {
 	// XXX Stubbed
 	return false;
@@ -67,36 +67,53 @@ void INotify::read_events() {
 		length = read(this->fd, this->buffer, BUF_LEN);  
 		if (length < 0)
 			throw runtime_error("Failed to read next inotify event");
-		inotify_event *event = (inotify_event*) &buffer[i];
-		this->dispatch_event(*event);
-		i += EVENT_SIZE + event->len;
+		const inotify_event& event = (const inotify_event&)buffer[i];
+		this->dispatch_event(event);
+		i += EVENT_SIZE + event.len;
 	} while (i < length);
 }
 
+#define run_event(event_name) \
+{ \
+	for(unsigned int i=0; i < this->listeners.size(); i++) \
+		this->listeners[i]->event_name(source, path); \
+}
+
 void INotify::dispatch_event(const inotify_event& event) {
-	if (event.mask & IN_Q_OVERFLOW)
+	const string& source = this->watches[event.wd];
+	string path;
+	if (event.len)
+		path=string(event.name);
+	/*
+	 * run_event depends on source and path, so if these are renamed, the macro
+	 * will have to be changed as well.
+	 */
+	if (event.mask & IN_Q_OVERFLOW) {
 		throw runtime_error("inotify's internal queue has overflowed");
-	if ( event.len ) {
-		if ( event.mask & IN_CREATE ) {
-			if ( event.mask & IN_ISDIR ) {
-				printf( "The directory %s was created.\n", event.name );
-			}
-			else {
-				printf( "The file %s was created.\n", event.name );
-			}
-		} else if ( event.mask & IN_DELETE ) {
-			if ( event.mask & IN_ISDIR ) {
-				printf( "The directory %s was deleted.\n", event.name );       
-			} else {
-				printf( "The file %s was deleted.\n", event.name );
-			}
-		} else if ( event.mask & IN_MODIFY ) {
-			if ( event.mask & IN_ISDIR ) {
-				printf( "The directory %s was modified.\n", event.name );
-			} else {
-				printf( "The file %s was modified.\n", event.name );
-			}
-		}
+	} else if (event.mask & IN_OPEN) {
+		run_event(file_opened);
+	} else if (event.mask & IN_CREATE) {
+		run_event(file_created);
+	} else if (event.mask & IN_ACCESS) {
+		run_event(file_accessed);
+	} else if (event.mask & IN_MODIFY) {
+		run_event(file_written);
+	} else if (event.mask & IN_ATTRIB) {
+		run_event(file_attr_changed);
+	} else if (event.mask & IN_MOVED_FROM) {
+		run_event(file_moving);
+	} else if (event.mask & IN_MOVED_TO) {
+		run_event(file_moved);
+	} else if (event.mask & IN_CLOSE) {
+		run_event(file_closed);
+	} else if (event.mask & (IN_DELETE | IN_DELETE_SELF)) {
+		run_event(file_deleted);
+	} else if (event.mask & (IN_IGNORED | IN_UNMOUNT)) {
+		for(unsigned int i=0; i < this->listeners.size(); i++)
+			this->listeners[i]->watch_removed(source);
+	} else {
+		std::cerr << "Unhandled event mask: " << event.mask;
+		throw runtime_error("Event mask was not handled");
 	}
 }
 
