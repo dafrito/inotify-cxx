@@ -69,6 +69,8 @@ void INotify::read_events() {
 }
 
 void INotify::dispatch_event(const inotify_event& event) {
+	if (event.mask & IN_Q_OVERFLOW)
+		throw runtime_error("inotify's internal queue has overflowed");
 	if ( event.len ) {
 		if ( event.mask & IN_CREATE ) {
 			if ( event.mask & IN_ISDIR ) {
