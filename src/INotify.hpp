@@ -23,7 +23,7 @@ public:
 	void readEvents();
 	void removeWatch(const string& path);
 
-	void add_listener(INotifyListener* const listener);
+	void addListener(INotifyListener* const listener);
 	bool remove_listener(INotifyListener* const listener);
 protected:
 

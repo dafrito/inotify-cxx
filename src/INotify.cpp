@@ -49,7 +49,7 @@ int INotify::getWatchFD(const string& path)
 	return 0;
 }
 
-void INotify::add_listener(INotifyListener* const listener)
+void INotify::addListener(INotifyListener* const listener)
 {
 	this->listeners.push_back(listener);
 }
