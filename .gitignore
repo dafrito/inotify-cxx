@@ -1,1 +1,14 @@
 run-watch
+Makefile.in
+aclocal.m4
+autom4te.cache/
+*.log
+config.guess
+config.sub
+configure
+depcomp
+install-sh
+missing
+*.la
+ltmain.sh
+config.h.in
