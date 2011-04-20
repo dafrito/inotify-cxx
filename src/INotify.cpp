@@ -49,12 +49,12 @@ int INotify::getWatchFD(const string& path)
 	return 0;
 }
 
-void INotify::addListener(INotifyListener* const listener)
+void INotify::addListener(const NotifyListener& listener)
 {
 	this->listeners.push_back(listener);
 }
 
-bool INotify::removeListener(INotifyListener* const listener)
+bool INotify::removeListener(const NotifyListener& listener)
 {
 	// XXX Stubbed
 	return false;
@@ -73,48 +73,15 @@ void INotify::readEvents() {
 	} while (i < length);
 }
 
-#define run_event(event_name) \
-{ \
-	for(unsigned int i=0; i < this->listeners.size(); i++) \
-		this->listeners[i]->event_name(source, path); \
-}
-
 void INotify::dispatchEvent(const inotify_event& event) {
 	const string& source = this->watches[event.wd];
 	string path;
 	if (event.len)
 		path=string(event.name);
-	/*
-	 * run_event depends on source and path, so if these are renamed, the macro
-	 * will have to be changed as well.
-	 */
-	if (event.mask & IN_Q_OVERFLOW) {
+	if (event.mask & IN_Q_OVERFLOW)
 		throw runtime_error("inotify's internal queue has overflowed");
-	} else if (event.mask & IN_OPEN) {
-		run_event(file_opened);
-	} else if (event.mask & IN_CREATE) {
-		run_event(file_created);
-	} else if (event.mask & IN_ACCESS) {
-		run_event(file_accessed);
-	} else if (event.mask & IN_MODIFY) {
-		run_event(file_written);
-	} else if (event.mask & IN_ATTRIB) {
-		run_event(file_attr_changed);
-	} else if (event.mask & IN_MOVED_FROM) {
-		run_event(file_moving);
-	} else if (event.mask & IN_MOVED_TO) {
-		run_event(file_moved);
-	} else if (event.mask & IN_CLOSE) {
-		run_event(file_closed);
-	} else if (event.mask & (IN_DELETE | IN_DELETE_SELF)) {
-		run_event(file_deleted);
-	} else if (event.mask & (IN_IGNORED | IN_UNMOUNT)) {
-		for(unsigned int i=0; i < this->listeners.size(); i++)
-			this->listeners[i]->watch_removed(source);
-	} else {
-		std::cerr << "Unhandled event mask: " << event.mask;
-		throw runtime_error("Event mask was not handled");
-	}
+	for (std::vector<NotifyListener>::iterator i=listeners.begin(); i != listeners.end(); ++i)
+		(*i)(source, path, event);
 }
 
 INotify::~INotify()

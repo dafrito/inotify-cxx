@@ -5,11 +5,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
 #include "INotifyListener.hpp"
 
 using namespace std;
 
 typedef map<int, string> WatchMap;
+typedef function<void(const string& source, const string& path, const inotify_event&)> NotifyListener;
 
 class INotify
 {
@@ -23,8 +25,8 @@ public:
 	void readEvents();
 	void removeWatch(const string& path);
 
-	void addListener(INotifyListener* const listener);
-	bool removeListener(INotifyListener* const listener);
+	void addListener(const NotifyListener& listener);
+	bool removeListener(const NotifyListener& listener);
 protected:
 
 	void dispatchEvent(const inotify_event& event);
