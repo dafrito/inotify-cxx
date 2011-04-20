@@ -68,7 +68,7 @@ void INotify::readEvents() {
 		if (length < 0)
 			throw runtime_error("Failed to read next inotify event");
 		const inotify_event& event = (const inotify_event&)buffer[i];
-		this->dispatch_event(event);
+		this->dispatchEvent(event);
 		i += EVENT_SIZE + event.len;
 	} while (i < length);
 }
@@ -79,7 +79,7 @@ void INotify::readEvents() {
 		this->listeners[i]->event_name(source, path); \
 }
 
-void INotify::dispatch_event(const inotify_event& event) {
+void INotify::dispatchEvent(const inotify_event& event) {
 	const string& source = this->watches[event.wd];
 	string path;
 	if (event.len)

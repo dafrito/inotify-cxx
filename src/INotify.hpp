@@ -27,7 +27,7 @@ public:
 	bool removeListener(INotifyListener* const listener);
 protected:
 
-	void dispatch_event(const inotify_event& event);
+	void dispatchEvent(const inotify_event& event);
 	int getWatchFD(const string& path);
 private:
 	static const int EVENT_SIZE = sizeof(inotify_event);
