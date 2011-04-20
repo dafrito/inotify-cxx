@@ -54,7 +54,7 @@ void INotify::addListener(INotifyListener* const listener)
 	this->listeners.push_back(listener);
 }
 
-bool INotify::remove_listener(INotifyListener* const listener)
+bool INotify::removeListener(INotifyListener* const listener)
 {
 	// XXX Stubbed
 	return false;

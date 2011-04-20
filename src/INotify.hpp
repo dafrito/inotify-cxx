@@ -24,7 +24,7 @@ public:
 	void removeWatch(const string& path);
 
 	void addListener(INotifyListener* const listener);
-	bool remove_listener(INotifyListener* const listener);
+	bool removeListener(INotifyListener* const listener);
 protected:
 
 	void dispatch_event(const inotify_event& event);
