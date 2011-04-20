@@ -12,3 +12,4 @@ missing
 *.la
 ltmain.sh
 config.h.in
+build/
