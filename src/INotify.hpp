@@ -21,7 +21,7 @@ public:
 	void watch(const string& path);
 	bool hasWatch(const string& path);
 	void readEvents();
-	void remove_watch(const string& path);
+	void removeWatch(const string& path);
 
 	void add_listener(INotifyListener* const listener);
 	bool remove_listener(INotifyListener* const listener);

@@ -26,7 +26,7 @@ void INotify::watch(const string& path)
 	this->watch(path, IN_ALL_EVENTS);
 }
 
-void INotify::remove_watch(const string& path)
+void INotify::removeWatch(const string& path)
 {
 	int wd=this->get_watch_fd(path);
 	if (wd > 0) {
