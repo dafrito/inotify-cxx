@@ -19,7 +19,7 @@ public:
 
 	void watch(const string& path, const int& bitmask);
 	void watch(const string& path);
-	bool has_watch(const string& path);
+	bool hasWatch(const string& path);
 	void read_events();
 	void remove_watch(const string& path);
 
