@@ -60,7 +60,7 @@ bool INotify::remove_listener(INotifyListener* const listener)
 	return false;
 }
 
-void INotify::read_events() {
+void INotify::readEvents() {
 	int i=0;
 	int length=0;
 	do {
