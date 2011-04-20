@@ -28,7 +28,7 @@ void INotify::watch(const string& path)
 
 void INotify::removeWatch(const string& path)
 {
-	int wd=this->get_watch_fd(path);
+	int wd=this->getWatchFD(path);
 	if (wd > 0) {
 		inotify_rm_watch(this->fd, wd);
 		this->watches.erase(wd);
@@ -37,10 +37,10 @@ void INotify::removeWatch(const string& path)
 
 bool INotify::hasWatch(const string& path)
 {
-	return this->get_watch_fd(path) != 0;
+	return this->getWatchFD(path) != 0;
 }
 
-int INotify::get_watch_fd(const string& path)
+int INotify::getWatchFD(const string& path)
 {
 	for (WatchMap::iterator i=this->watches.begin(); i != this->watches.end(); i++) {
 		if (path == i->second)

@@ -28,7 +28,7 @@ public:
 protected:
 
 	void dispatch_event(const inotify_event& event);
-	int get_watch_fd(const string& path);
+	int getWatchFD(const string& path);
 private:
 	static const int EVENT_SIZE = sizeof(inotify_event);
 	static const int BUF_LEN = 1024*(EVENT_SIZE+16);
