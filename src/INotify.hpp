@@ -6,12 +6,11 @@
 #include <vector>
 #include <map>
 #include <functional>
-#include "INotifyListener.hpp"
 
-using namespace std;
+using std::string;
 
-typedef map<int, string> WatchMap;
-typedef function<void(const string& source, const string& path, const inotify_event&)> NotifyListener;
+typedef std::map<const int, string> WatchMap;
+typedef std::function<void(const string& source, const string& path, const inotify_event&)> NotifyListener;
 
 class INotify
 {
@@ -36,8 +35,8 @@ private:
 	static const int BUF_LEN = 1024*(EVENT_SIZE+16);
 
 	const int fd;
-	map<const int, string> watches;
-	vector<INotifyListener*> listeners;
+	WatchMap watches;
+	std::vector<NotifyListener> listeners;
 	char buffer[BUF_LEN];
 };
 
