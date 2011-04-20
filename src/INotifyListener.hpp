@@ -1,5 +1,5 @@
-#ifndef INOTIFYLISTENER_H
-#define INOTIFYLISTENER_H
+#ifndef HPP_INOTIFYLISTENER
+#define HPP_INOTIFYLISTENER
 
 #include <string>
 

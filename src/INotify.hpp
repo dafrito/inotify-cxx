@@ -1,5 +1,5 @@
-#ifndef INOTIFY_H
-#define INOTIFY_H
+#ifndef HPP_INOTIFY_PRIMARY
+#define HPP_INOTIFY_PRIMARY
 
 #include <sys/inotify.h>
 #include <string>

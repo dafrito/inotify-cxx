@@ -1,5 +1,5 @@
-#ifndef INOTIFYPRINTLISTENER_H
-#define INOTIFYPRINTLISTENER_H
+#ifndef HPP_INOTIFYPRINTLISTENER
+#define HPP_INOTIFYPRINTLISTENER
 
 #include <string>
 #include "INotifyListener.hpp"
