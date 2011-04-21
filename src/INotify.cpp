@@ -5,8 +5,9 @@
 
 using namespace std;
 
-INotify::INotify() :
-	fd(inotify_init())
+INotify::INotify(const NotifyListener& receiver) :
+	fd(inotify_init()),
+	receiver(receiver)
 {
 	if (this->fd == 0)
 		throw runtime_error("Failed to initialize inotify");
@@ -49,17 +50,6 @@ int INotify::getWatchFD(const string& path)
 	return 0;
 }
 
-void INotify::addListener(const NotifyListener& listener)
-{
-	this->listeners.push_back(listener);
-}
-
-bool INotify::removeListener(const NotifyListener& listener)
-{
-	// XXX Stubbed
-	return false;
-}
-
 void INotify::readEvents() {
 	int i=0;
 	int length=0;
@@ -80,8 +70,7 @@ void INotify::dispatchEvent(const inotify_event& event) {
 		path=string(event.name);
 	if (event.mask & IN_Q_OVERFLOW)
 		throw runtime_error("inotify's internal queue has overflowed");
-	for (std::vector<NotifyListener>::iterator i=listeners.begin(); i != listeners.end(); ++i)
-		(*i)(source, path, event);
+	this->receiver(source, path, event);
 }
 
 INotify::~INotify()

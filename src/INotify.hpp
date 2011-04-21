@@ -15,7 +15,7 @@ typedef std::function<void(const string& source, const string& path, const inoti
 class INotify
 {
 public:
-	INotify();
+	INotify(const NotifyListener& receiver=noopReceiver);
 	~INotify();
 
 	void watch(const string& path, const int& bitmask);
@@ -24,8 +24,7 @@ public:
 	void readEvents();
 	void removeWatch(const string& path);
 
-	void addListener(const NotifyListener& listener);
-	bool removeListener(const NotifyListener& listener);
+	void setReceiver(const NotifyListener& listener);
 protected:
 
 	void dispatchEvent(const inotify_event& event);
@@ -34,9 +33,15 @@ private:
 	static const int EVENT_SIZE = sizeof(inotify_event);
 	static const int BUF_LEN = 1024*(EVENT_SIZE+16);
 
+	static void noopReceiver(const string&, const string&, const inotify_event&)
+	{
+		// No-op
+	}
+
 	const int fd;
+	NotifyListener receiver;
 	WatchMap watches;
-	std::vector<NotifyListener> listeners;
+
 	char buffer[BUF_LEN];
 };
 
