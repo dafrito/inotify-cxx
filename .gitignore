@@ -13,3 +13,11 @@ missing
 ltmain.sh
 config.h.in
 build/
+.deps
+.libs
+stamp*
+libtool
+Makefile
+*.lo
+config.h
+config.status
