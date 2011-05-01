@@ -6,7 +6,7 @@ AC_INIT([inotify-cxx], [0.0], [dafrito@gmail.com])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 LT_INIT
 
-AC_CONFIG_SRCDIR([src/INotify.cpp])
+AC_CONFIG_SRCDIR([inotify-cxx/INotify.cpp])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
@@ -21,5 +21,5 @@ AC_HEADER_STDBOOL
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile inotify-cxx/Makefile tests/Makefile])
 AC_OUTPUT
