@@ -5,9 +5,10 @@
 
 using namespace std;
 
-INotify::INotify(const NotifyListener& receiver) :
+INotify::INotify(const NotifyListener& receiver, void* data) :
 	fd(inotify_init()),
-	receiver(receiver)
+	receiver(receiver),
+	user_data(data)
 {
 	if (this->fd == 0)
 		throw runtime_error("Failed to initialize inotify");
@@ -70,7 +71,7 @@ void INotify::dispatchEvent(const inotify_event& event) {
 		path=string(event.name);
 	if (event.mask & IN_Q_OVERFLOW)
 		throw runtime_error("inotify's internal queue has overflowed");
-	this->receiver(source, path, event);
+	this->receiver(source, path, event, user_data);
 }
 
 INotify::~INotify()

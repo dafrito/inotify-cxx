@@ -10,12 +10,12 @@
 using std::string;
 
 typedef std::map<const int, string> WatchMap;
-typedef std::function<void(const string& source, const string& path, const inotify_event&)> NotifyListener;
+typedef std::function<void(const string& source, const string& path, const inotify_event&, void* user_data)> NotifyListener;
 
 class INotify
 {
 public:
-	INotify(const NotifyListener& receiver=noopReceiver);
+	INotify(const NotifyListener& receiver=noopReceiver, void* data=NULL);
 	~INotify();
 
 	void watch(const string& path, const int& bitmask);
@@ -24,7 +24,9 @@ public:
 	void readEvents();
 	void removeWatch(const string& path);
 
-	void setReceiver(const NotifyListener& listener);
+	inline void setReceiver(const NotifyListener& listener) { receiver = listener; }
+	inline void setData(void* data) { user_data = data; }
+
 protected:
 
 	void dispatchEvent(const inotify_event& event);
@@ -41,6 +43,7 @@ private:
 	const int fd;
 	NotifyListener receiver;
 	WatchMap watches;
+	void* user_data;
 
 	char buffer[BUF_LEN];
 };
